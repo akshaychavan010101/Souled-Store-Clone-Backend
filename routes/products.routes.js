@@ -1,41 +1,65 @@
 const express = require("express");
-const { authenticator } = require("../middlewares/authenticator.middleware");
+// const { authenticator } = require("../middlewares/authenticator.middleware");
 const { ProductModel } = require("../models/products.model");
 const ProductRouter = express.Router();
 ProductRouter.use(express.json());
 
-ProductRouter.use(authenticator);
 ProductRouter.get("/products", async (req, res) => {
-  const products = await ProductModel.find();
-  res.send(products);
+  try {
+    const products = await ProductModel.find();
+    res.json({ data: products, ok: true });
+  } catch (error) {
+    res.send({ msg: "Error**", Error: error.message });
+  }
+});
+
+ProductRouter.get("/products/singleproduct/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const product = await ProductModel.findById({ _id: id });
+    res.send({ data: product, ok: true });
+  } catch (error) {
+    res.send({ msg: "Error**", Error: error.message });
+  }
 });
 
 ProductRouter.get("/products/women", async (req, res) => {
-  const products = await ProductModel.find({ gender: "Women" });
-  const count = await ProductModel.find({ gender: "Women" }).count();
-  res.send({ data: products, count: count });
+  try {
+    const products = await ProductModel.find({ gender: "Women" });
+    const count = products.length;
+    res.send({ data: products, count: count, ok: true });
+  } catch (error) {
+    console.log(error);
+    res.send({ msg: "Error**", Error: error });
+  }
 });
 
 ProductRouter.get("/products/men", async (req, res) => {
-  const products = await ProductModel.find({ gender: "Men" });
-  const count = await ProductModel.find({ gender: "Men" }).count();
-  res.send({ data: products, count: count });
+  try {
+    const products = await ProductModel.find({ gender: "Men" });
+    const count = products.length;
+    res.send({ data: products, count: count, ok: true });
+  } catch (error) {
+    res.send({ msg: "Error", Error: error.message });
+  }
 });
 
 ProductRouter.get("/products/kids", async (req, res) => {
-  const products = await ProductModel.find({ gender: "Kids" });
-  const count = await ProductModel.find({ gender: "Kids" }).count();
-  res.send({ data: products, count: count });
+  try {
+    const products = await ProductModel.find({ gender: "Kids" });
+    const count = products.length;
+    res.send({ data: products, count: count, ok: true });
+  } catch (error) {
+    res.send({ msg: "Error", Error: error.message });
+  }
 });
 
 ProductRouter.post("/products/add", async (req, res) => {
   const payload = req.body;
-
   try {
     const newProduct = new ProductModel(payload);
     await newProduct.save();
-    console.log(p);
-    res.send({ msg: "Product added" });
+    res.send({ msg: "Product Added Successfully", ok: true });
   } catch (error) {
     res.send({ msg: "Error", Error: error.message });
   }
