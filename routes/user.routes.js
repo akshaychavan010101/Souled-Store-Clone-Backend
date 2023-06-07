@@ -171,7 +171,7 @@ UserRouter.get("/google-verify", async (req, res) => {
     );
 
     // redirect the user to the frontend
-    res.redirect(`http://127.0.0.1:5500/frontend/main.html?token=${token}`);
+    res.redirect(`https://bagelly.netlify.app/main.html?token=${token}`);
   } catch (error) {
     console.log(error);
     res.status(500).json({ msg: "Something went wrong*", error });
